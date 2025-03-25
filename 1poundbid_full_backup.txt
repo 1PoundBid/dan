@@ -1,0 +1,186 @@
+# 1PoundBid System Backup
+# Generated: 2025-02-28T11:46:39.853Z
+
+# Project Structure
+- src/ - Application source code
+- supabase/migrations/ - Database migrations
+- supabase/functions/ - Serverless functions
+- public/ - Public assets
+
+# Environment Variables Template
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+
+# Package Dependencies
+{
+  "name": "vite-react-typescript-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "deploy:webhook": "echo 'Supabase CLI not available in this environment. Please deploy functions through the Supabase dashboard.'",
+    "debug": "node --experimental-modules --es-module-specifier-resolution=node debug-shipped-boxes.cjs",
+    "backup": "chmod +x backup.sh && ./backup.sh"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "dotenv": "^16.4.5",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.3",
+    "twilio": "^4.22.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0",
+    "vite": "^5.4.2"
+  }
+}
+
+# Database Schema
+1. customers
+   - id (uuid, primary key)
+   - bidder_number (text, unique)
+   - first_name (text)
+   - last_name (text)
+   - email (text)
+   - balance (decimal)
+   - created_at (timestamptz)
+   - updated_at (timestamptz)
+
+2. orders
+   - id (uuid, primary key)
+   - customer_id (uuid, foreign key)
+   - recorded_at (timestamptz)
+   - item_code (text)
+   - item_name (text)
+   - quantity (integer)
+   - debit (decimal)
+   - credit (decimal)
+   - status (enum: unprocessed, in_tray, in_box, shipped)
+   - processed_at (timestamptz)
+   - created_at (timestamptz)
+   - updated_at (timestamptz)
+
+3. storage_items
+   - id (uuid, primary key)
+   - customer_id (uuid, foreign key)
+   - type (text: bag_cage, box_shelf)
+   - created_at (timestamptz)
+
+4. shipped_boxes
+   - id (uuid, primary key)
+   - customer_id (uuid, foreign key)
+   - type (text: single, small, big)
+   - weight (decimal)
+   - archived (boolean)
+   - created_at (timestamptz)
+
+5. shipped_box_items
+   - id (uuid, primary key)
+   - box_id (uuid, foreign key)
+   - order_id (uuid, foreign key)
+   - created_at (timestamptz)
+
+6. box_orders
+   - id (uuid, primary key)
+   - customer_name (text)
+   - email (text)
+   - box_type (text)
+   - status (text)
+   - created_at (timestamptz)
+   - updated_at (timestamptz)
+
+7. customer_inquiries
+   - id (uuid, primary key)
+   - customer_name (text)
+   - email (text)
+   - phone (text)
+   - question (text)
+   - priority (text)
+   - status (text)
+   - created_at (timestamptz)
+   - updated_at (timestamptz)
+
+8. twilio_config
+   - id (uuid, primary key)
+   - account_sid (text)
+   - auth_token (text)
+   - phone_number (text)
+   - created_at (timestamptz)
+   - updated_at (timestamptz)
+
+9. sms_replies
+   - id (uuid, primary key)
+   - from_number (text)
+   - to_number (text)
+   - message (text)
+   - created_at (timestamptz)
+   - read (boolean)
+
+# Features
+1. Customer Management
+   - Profile management
+   - Order history
+   - Balance tracking
+
+2. Order Processing
+   - Barcode scanning
+   - Tray management
+   - Box packing
+   - Shipping preparation
+
+3. Storage Management
+   - Bag cage tracking
+   - Box shelf organization
+   - Archive system
+
+4. Real-time Updates
+   - Live order status
+   - Voice feedback
+   - Instant notifications
+
+5. Communication
+   - SMS messaging
+   - Customer inquiries
+   - Box ordering
+
+# Restore Instructions
+1. Create new project:
+   ```bash
+   npm create vite@latest my-project -- --template react-ts
+   cd my-project
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Copy source files from backup
+
+4. Set up Supabase:
+   - Create new project
+   - Run migrations
+   - Configure environment variables
+
+5. Start development server:
+   ```bash
+   npm run dev
+   ```
